@@ -1,0 +1,86 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<p:dialog header="Register" widgetVar="register" resizable="false" modal="true">
+		<h:form>
+
+			<h:panelGrid columns="2" cellpadding="4">
+				<h:outputLabel for="name" value="Name:"/>
+				<p:inputText id="name" value="#{userBean.user.name}" required="true" label="name"/>
+				<h:outputLabel for="email" value="Email:"/>
+				<p:inputText  id="email" value="#{userBean.user.email}" required="true" label="email">
+					<f:validateRegex
+							pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+				</p:inputText>
+				<h:outputLabel for="phone" value="Phone:"/>
+				<p:inputText id="phone" value="#{userBean.user.phone}" required="true" label="phone"/>
+				<h:outputLabel for="passwordRegister" value="Password:"/>
+				<p:password id="passwordRegister" value="#{userBean.user.password}" required="true" label="password"/>
+				<f:facet name="footer">
+					<p:commandButton value="Register" actionListener="#{userBean.register}"
+									 rendered="#{request.userPrincipal==null}" oncomplete="handleRegisterRequest(xhr, status, args)"/>
+					<p:commandButton value="Update" actionListener="#{userBean.update}"
+									 rendered="#{request.userPrincipal!=null}"/>
+				</f:facet>
+			</h:panelGrid>
+
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Login" widgetVar="login" resizable="false" modal="true">
+		<h:form>
+			<h:panelGrid columns="2" cellpadding="5">
+				<h:outputLabel for="username" value="Email:"/>
+				<p:inputText id="username" value="#{userBean.user.email}" required="true" label="Email"/>
+				<h:outputLabel for="password" value="Password:"/>
+				<p:password id="password" value="#{userBean.user.password}" required="true" label="Password"/>
+				<f:facet name="footer">
+					<p:commandButton value="Login" actionListener="#{userBean.login}"
+									 oncomplete="handleLoginRequest(xhr, status, args)"/>
+
+				</f:facet>
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="New Task" widgetVar="task" resizable="false" modal="true">
+		<h:form>
+			<h:panelGrid columns="2" cellpadding="5">
+
+				<p:outputLabel for="fromInput" value="From:"></p:outputLabel>
+				<p:calendar id="fromInput" value="#{taskBean.task.from}" pattern="dd/MM/yyyy HH:mm"
+							required="true"></p:calendar>
+				<p:outputLabel for="toInput" value="To:"></p:outputLabel>
+				<p:calendar id="toInput" value="#{taskBean.task.to}" pattern="dd/MM/yyyy HH:mm"
+							required="true"></p:calendar>
+				<p:outputLabel for="dateInput" value="Date:"></p:outputLabel>
+				<p:calendar id="dateInput" value="#{taskBean.task.date}" pattern="dd/MM/yyyy HH:mm"
+							required="true"></p:calendar>
+				<p:outputLabel for="locationInput" value="location:"></p:outputLabel>
+				<p:inputText id="locationInput" value="#{taskBean.task.location}"></p:inputText>
+				<p:outputLabel for="taskTypeInput" value="location:"></p:outputLabel>
+				<p:selectOneMenu id="taskTypeInput" value="#{taskBean.task.taskType}"
+								 converter="#{taskTypeConverterBean}">
+					<f:selectItems value="#{taskTypeBean.taskTypes}" var="type" itemValue="#{type}"
+								   itemLabel="#{type.type}"/>
+				</p:selectOneMenu>
+				<p:outputLabel for="isDoneInput" value="isDone:"></p:outputLabel>
+				<p:selectBooleanCheckbox id="isDoneInput" value="#{taskBean.task.isDone}"></p:selectBooleanCheckbox>
+				<f:facet name="footer">
+					<p:commandButton value="Add" actionListener="#{taskBean.add}" onclick="reloadTasks()"  oncomplete="handleAddTaskRequest(xhr, status, args)"/>
+				</f:facet>
+			</h:panelGrid>
+		</h:form>
+
+	</p:dialog>
+
+	<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+		<p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+		<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+	</p:confirmDialog>
+</ui:composition>

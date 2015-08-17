@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns="http://www.springframework.org/schema/security" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+
+	<!-- Defined in employee-servlet.xml -->
+	<beans:bean id="usrBean" class="com.scheduler.beans.UserBean"></beans:bean>
+
+
+	<http auto-config="true" use-expressions="true"
+		entry-point-ref="authenticationEntryPoint">
+
+		<form-login login-page="/index.xhtml" password-parameter="loginForm:usernameTxt"
+			username-parameter="loginForm:passwordTxt" />
+
+		<logout logout-success-url="/"/>
+
+		<intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/javax.faces.resource/**" access="permitAll" />
+	</http>
+
+	<beans:bean id="encoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></beans:bean>
+
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider user-service-ref="usrBean" >
+			<password-encoder ref="encoder" />
+		</authentication-provider>
+	</authentication-manager>
+
+	<beans:bean id="authenticationEntryPoint"
+		class="com.scheduler.ss.JsfLoginUrlAuthenticationEntryPoint" p:loginFormUrl="/index.xhtml"
+		p:redirectStrategy-ref="redirectStrategy" />
+		
+	<beans:bean id="redirectStrategy" class="com.scheduler.ss.JsfRedirectStrategy" />
+
+</beans:beans>

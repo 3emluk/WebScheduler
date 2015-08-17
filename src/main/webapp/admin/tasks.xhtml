@@ -1,0 +1,120 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="/templates/template.xhtml">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="content">
+
+        <h:body>
+
+            <h:form id="taskForm">
+                <p:growl id="msgs" autoUpdate="true"/>
+                <f:event type="preRenderView" listener="#{taskBean.updateTasks}"/>
+                <f:event type="preRenderView" listener="#{taskTypeBean.updateTaskTypes}"/>
+
+                <p:dataTable id="tasks" var="task" value="#{taskBean.tasks}" editable="true" style="margin-bottom:20px"
+                             rowKey="#{task.id}" selection="#{task}" selectionMode="single">
+                    <f:facet name="header">
+                        My Tasks
+                    </f:facet>
+
+                    <p:ajax event="rowEdit" listener="#{taskBean.onRowEdit}"/>
+                    <p:ajax event="rowEditCancel" listener="#{taskBean.onRowCancel}"/>
+
+                    <p:column headerText="From" sortBy="#{task.from}">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{task.from}">
+                                    <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+                                </h:outputText>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:calendar id="from" value="#{task.from}" pattern="dd/MM/yyyy HH:mm"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column headerText="To" sortBy="#{task.to}">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{task.to}">
+                                    <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+                                </h:outputText>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:calendar id="to" value="#{task.to}" pattern="dd/MM/yyyy HH:mm"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column headerText="Date" sortBy="#{task.date}">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{task.date}">
+                                    <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm"/>
+                                </h:outputText>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:calendar id="date" value="#{task.date}" pattern="dd/MM/yyyy HH:mm"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column headerText="Location">
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="#{task.location}"/></f:facet>
+                            <f:facet name="input"><p:inputText value="#{task.location}" style="width:100%"
+                                                               label="Location"/></f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column headerText="Type">
+                        <f:facet name="output">
+                            <h:outputText value="#{taskBean.task.taskType}"/>
+
+                        </f:facet>
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <p:selectOneMenu value="#{taskBean.task.taskType}" converter="#{taskTypeConverterBean}"
+                                                 disabled="true">
+                                    <f:selectItems value="#{taskTypeBean.taskTypes}" var="type" itemValue="#{type}"
+                                                   itemLabel="#{type.type}"/>
+                                </p:selectOneMenu>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:selectOneMenu value="#{taskBean.task.taskType}" converter="#{taskTypeConverterBean}"
+                                                 style="width: 60%">
+                                    <f:selectItems value="#{taskTypeBean.taskTypes}" var="type" itemValue="#{type}"
+                                                   itemLabel="#{type.type}"/>
+                                </p:selectOneMenu>
+
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column headerText="isDone" sortBy="#{task.isDone}" style="width:5%">
+                        <p:cellEditor>
+                            <f:facet name="output"> <p:selectBooleanCheckbox value="#{task.isDone}"
+                                                                             style="width:100%"
+                                                                             disabled="true"></p:selectBooleanCheckbox></f:facet>
+                            <f:facet name="input">
+                                <p:selectBooleanCheckbox value="#{task.isDone}"
+                                                         style="width:100%"></p:selectBooleanCheckbox>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column style="width:6%">
+                        <p:rowEditor/>
+                        <h:commandButton value="Delete" update="tasks" action="#{taskBean.delete(task)}"/>
+                    </p:column>
+                </p:dataTable>
+
+                <p:commandButton type="button" value="Add task" onclick="PF('task').show();" update="tasks"/>
+            </h:form>
+        </h:body>
+    </ui:define>
+</ui:composition>

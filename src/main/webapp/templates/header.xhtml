@@ -1,0 +1,78 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <h:form id="menuBar">
+
+
+        <p:menubar>
+
+            <p:menuitem value="Tasks" url="/admin/tasks.xhtml" icon="ui-icon-contact"/>
+            <p:submenu label="User Profile" icon="ui-icon-pencil" rendered="#{request.userPrincipal!=null}">
+                <p:menuitem value="Update" onclick="PF('register').show();"></p:menuitem>
+
+                <p:menuitem>
+                    <p:commandLink value="Delete" styleClass="ui-menuitem-link" action="#{userBean.delete}">
+                        <p:confirm header="Delete profile" message="Are you sure?" icon="ui-icon-alert"/>
+                    </p:commandLink>
+                </p:menuitem>
+            </p:submenu>
+
+            <f:facet name="options">
+                <p:button type="button" value="Logout" rendered="#{request.userPrincipal!=null}"
+                          href="/j_spring_security_logout"/>
+                <p:commandButton type="button" value="Register" rendered="#{request.userPrincipal==null}"
+                                 onclick="PF('register').show();"/>
+                <p:commandButton type="button" value="Login" rendered="#{request.userPrincipal==null}"
+                                 onclick="PF('login').show();"/>
+            </f:facet>
+        </p:menubar>
+
+        <script type="text/javascript">
+            function handleLoginRequest(xhr, status, args) {
+                if (args.validationFailed || !args.loggedIn) {
+                    PF('login').jq.effect("shake", {times: 5}, 100);
+                }
+                else {
+                    PF('login').hide();
+//                    document.location.reload(true);
+                    $.ajax({
+                        type: "POST",
+                        url: "/",
+                        data: "",
+                        success: function(){
+                            location.reload();
+                        }
+                    });
+                }
+            }
+
+            function handleRegisterRequest(xhr, status, args) {
+                if (args.validationFailed || !args.isRegistered) {
+                    PF('register').jq.effect("shake", {times: 5}, 100);
+                }
+                else {
+                    PF('register').hide();
+                }
+            }
+
+
+            function handleAddTaskRequest(xhr, status, args) {
+                if (args.validationFailed || !args.isTaskCreated) {
+                    PF('task').jq.effect("shake", {times: 5}, 100);
+                }
+                else {
+                    PF('task').hide();
+                    $("#tasks").replaceWith(("#tasks", html));
+                }
+            }
+        </script>
+    </h:form>
+
+
+</ui:composition>

@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html   xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:p="http://primefaces.org/ui"
+		xmlns:f="http://java.sun.com/jsf/core">
+
+<f:view contentType="text/html" id="fview">
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Web Schelduler</title>
+		<ui:debug />
+		<f:metadata>
+			<ui:insert name="metadata" />
+		</f:metadata>
+		
+		<h:head>
+			<title>Web Schelduler</title>
+			<style type="text/css">
+				.ui-layout-north {
+					z-index: 20 !important;
+					overflow: visible !important;;
+				}
+
+				.ui-layout-north .ui-layout-unit-content {
+					overflow: visible !important;
+				}
+
+				body {
+					background-color: #FFFFFF;
+				}
+			</style>
+		</h:head>
+
+	<h:body >
+		<p:growl id="messages" autoUpdate="true" life="2500"/>
+
+		<p:layout fullPage="true"  style="background-color:#FFFFFF;">
+
+			<p:layoutUnit id="top" position="north" size="64">
+				<ui:include src="header.xhtml" />
+			</p:layoutUnit>
+
+			<p:layoutUnit	styleClass="layoutUnitCenter" 	position="center" >
+				<h:form id="mainForm" >
+					<ui:insert name="content" />
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="south" resizable="true" id="south">
+				<ui:include src="footer.xhtml" />
+			</p:layoutUnit>
+
+		</p:layout>
+
+		<ui:include src="dialogs.xhtml"/>
+
+
+
+	</h:body>
+
+</f:view>
+</html>		
